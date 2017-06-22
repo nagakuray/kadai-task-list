@@ -4,6 +4,9 @@ organization := "com.example"
 
 version := "1.0.0-SNAPSHOT"
 
+import com.typesafe.config.{Config, ConfigFactory}
+import scala.collection.JavaConverters._
+
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.11"
@@ -44,12 +47,25 @@ libraryDependencies ++= Seq(
   "org.skinny-framework"   %% "skinny-orm"                   % "2.3.7",
   "org.scalikejdbc"        %% "scalikejdbc-play-initializer" % "2.5.+",
   "ch.qos.logback"         % "logback-classic"               % "1.2.3",
-  "mysql"                  % "mysql-connector-java"          % "6.0.6" // 追加
-
+  "mysql"                  % "mysql-connector-java"          % "6.0.6", // 追加
+  "com.adrianhurt"         %% "play-bootstrap"               % "1.1-P25-B3" // 追加
 )
 
 // Adds additional packages into Twirl
-// TwirlKeys.templateImports ++= Seq(...)
+TwirlKeys.templateImports ++= Seq("forms._")
 
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
+
+lazy val envConfig = settingKey[Config]("env-config")
+
+envConfig := {
+  val env = sys.props.getOrElse("env", "dev")
+  ConfigFactory.parseFile(file("env") / (env + ".conf"))
+}
+
+flywayLocations := envConfig.value.getStringList("flywayLocations").asScala
+flywayDriver := envConfig.value.getString("jdbcDriver")
+flywayUrl := envConfig.value.getString("jdbcUrl")
+flywayUser := envConfig.value.getString("jdbcUserName")
+flywayPassword := envConfig.value.getString("jdbcPassword")
