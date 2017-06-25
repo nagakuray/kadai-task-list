@@ -34,17 +34,25 @@ class UpdateTaskController @Inject()(val messagesApi: MessagesApi)
       .fold(
         formWithErrors => BadRequest(views.html.edit(formWithErrors)), { model =>
           implicit val session = AutoSession
-          val result = Task
-            .updateById(model.id.get)
-            .withAttributes(
-              'content  -> model.content,
-              'status   -> model.status,
-              'updateAt -> ZonedDateTime.now()
-            )
-          if (result > 0)
-            Redirect(routes.GetTasksController.index())
-          else
-            InternalServerError(Messages("UpdateTaskError"))
+          model.id match {
+            case Some(id) =>
+              val result = Task
+                .updateById(id)
+                .withAttributes(
+                  'content  -> model.content,
+                  'status   -> model.status,
+                  'updateAt -> ZonedDateTime.now()
+                )
+              if (result > 0)
+                Redirect(routes.GetTasksController.index())
+              else
+                InternalServerError(Messages("UpdateTaskError"))
+
+            case None =>
+              NotFound("can not find taskId")
+
+          }
+
         }
       )
   }
