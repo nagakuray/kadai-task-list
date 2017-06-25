@@ -10,7 +10,9 @@ import play.api.mvc.{ Action, AnyContent, Controller }
 class GetTaskController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
 
   def index(taskId: Long): Action[AnyContent] = Action { implicit request =>
-    val task = Task.findById(taskId).get
-    Ok(views.html.show(task))
+    Task.findById(taskId) match {
+      case Some(task) => Ok(views.html.show(task))
+      case None       => NotFound("can not find taskId")
+    }
   }
 }

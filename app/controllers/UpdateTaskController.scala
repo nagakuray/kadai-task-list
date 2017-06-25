@@ -16,9 +16,16 @@ class UpdateTaskController @Inject()(val messagesApi: MessagesApi)
     with TaskControllerSupport {
 
   def index(taskId: Long): Action[AnyContent] = Action { implicit request =>
-    val result     = Task.findById(taskId).get
-    val filledForm = form.fill(TaskForm(result.id, result.content, result.status.getOrElse("-")))
-    Ok(views.html.edit(filledForm))
+//    val result     = Task.findById(taskId).get
+//    val filledForm = form.fill(TaskForm(result.id, result.content, result.status.getOrElse("-")))
+//    Ok(views.html.edit(filledForm))
+    Task.findById(taskId) match {
+      case Some(task) =>
+        val filledForm = form.fill(TaskForm(task.id, task.content, task.status.getOrElse("-")))
+        Ok(views.html.edit(filledForm))
+      case None =>
+        NotFound("can not find taskId")
+    }
   }
 
   def update: Action[AnyContent] = Action { implicit request =>

@@ -18,6 +18,7 @@ class DeleteTaskController @Inject()(val messagesApi: MessagesApi) extends Contr
     } else {
       InternalServerError(Messages("DeleteTaskError"))
     }
+
   }
 
 }

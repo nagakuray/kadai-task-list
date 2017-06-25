@@ -1,4 +1,4 @@
-@(title: String)(content: Html)(implicit messages: Messages, request: RequestHeader)
+@(title: String)(content: Html)
 
 <!DOCTYPE html>
 <html>
@@ -25,7 +25,7 @@
                     </div>
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="@routes.CreateTaskController.index()">@Messages("CreateTask")</a></li>
+                            <li><a href="@routes.CreateTaskController.index()">タスク新規作成</a></li>
                         </ul>
                     </div>
                 </div>
